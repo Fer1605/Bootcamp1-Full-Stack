@@ -1,4 +1,4 @@
-# API REST con Node.js, Express y MongoDB Dockerizada
+# API REST con Node.js y MongoDB Dockerizada
 
 Este proyecto es una API REST completa construida con Node.js y Express, que utiliza MongoDB como base de datos. Toda la infraestructura está containerizada usando Docker, lo que facilita su despliegue y desarrollo en cualquier entorno.
 
