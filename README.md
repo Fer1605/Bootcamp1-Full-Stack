@@ -157,3 +157,7 @@ docker-compose up -d --build
 3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
 4. Push a la rama (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
+
+
+> Esta es una mejora del README para prueba de Pull Request.
+
