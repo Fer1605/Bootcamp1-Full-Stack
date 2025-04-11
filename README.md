@@ -1,4 +1,4 @@
-# API REST con Node.js y MongoDB Dockerizada
+# API REST con Node.js, Express y MongoDB Dockerizada
 
 Este proyecto es una API REST completa construida con Node.js y Express, que utiliza MongoDB como base de datos. Toda la infraestructura está containerizada usando Docker, lo que facilita su despliegue y desarrollo en cualquier entorno.
 
@@ -50,101 +50,35 @@ La API proporciona endpoints para gestionar usuarios con información personal, 
    - API: http://localhost:3000/items
    - La base de datos MongoDB estará accesible en localhost:27017
 
-## Configuración de la Base de Datos
+## Base de Datos
 
-La API incluye una base de datos preconfigurada `usersBoot` que necesitarás importar para tener los datos iniciales.
+Este proyecto incluye una carpeta `dump` que contiene la base de datos MongoDB necesaria para el funcionamiento de la API.
 
-1. **Copiar archivos de la base de datos**
+### Importar la Base de Datos
+
+1. **Después de clonar el repositorio**, la carpeta `dump` estará disponible en la raíz del proyecto.
+
+2. **Iniciar los contenedores**
    ```bash
-   # Crear directorio para los datos
-   mkdir -p mongodb_data
-
-   # Copiar archivos de la base de datos
-   cp -r dump/usersBoot/* mongodb_data/
-   ```
-
-2. **Modificar docker-compose.yml**
-   Asegúrate de que tu archivo `docker-compose.yml` tenga el volumen configurado correctamente:
-   ```yaml
-   services:
-     mongodb:
-       volumes:
-         - ./mongodb_data:/data/db
-         - ./dump:/docker-entrypoint-initdb.d
+   docker-compose up -d
    ```
 
 3. **Importar la base de datos**
-   Una vez que los contenedores estén corriendo:
    ```bash
-   # Acceder al contenedor de MongoDB
-   docker exec -it mongo_container bash
-
-   # Importar la base de datos (dentro del contenedor)
-   mongorestore --username devfs031023 --password access123 --authenticationDatabase admin --db usersBoot /docker-entrypoint-initdb.d/usersBoot/
-
-   # Salir del contenedor
-   exit
+   docker exec -it mongo_container mongorestore --username devfs031023 --password access123 --authenticationDatabase admin /dump
    ```
 
 4. **Verificar la importación**
    ```bash
-   # Conectarse a MongoDB y verificar los datos
+   # Conectarse a MongoDB
    docker exec -it mongo_container mongosh --username devfs031023 --password access123 --authenticationDatabase admin
-   
-   # En la consola de MongoDB:
+
+   # Dentro de la consola de MongoDB:
    use usersBoot
    db.usersObs.find().limit(1)
    ```
 
-Si ves un documento de usuario con campos como `first_name`, `last_name`, etc., la importación fue exitosa.
-
-### Estructura de la Base de Datos
-
-La colección `usersObs` contiene documentos con la siguiente estructura:
-```json
-{
-  "first_name": String,
-  "last_name": String,
-  "email": String,
-  "gender": String,
-  "address": {
-    "city": String,
-    "state": String,
-    "country": String,
-    "country_code": String
-  },
-  "card": {
-    "card_number": String,
-    "card_type": String,
-    "currency_code": String,
-    "balance": String
-  },
-  "married_status": Boolean
-}
-```
-
-### Solución de Problemas con la Base de Datos
-
-Si encuentras problemas al importar la base de datos:
-
-1. **Error de permisos**
-   ```bash
-   # Dar permisos correctos a la carpeta de datos
-   chmod -R 777 mongodb_data
-   ```
-
-2. **Error de autenticación**
-   - Verifica que las credenciales en el comando mongorestore coincidan con las del docker-compose.yml
-   - Asegúrate de usar --authenticationDatabase admin
-
-3. **Base de datos no aparece**
-   ```bash
-   # Reiniciar el contenedor de MongoDB
-   docker-compose restart mongodb
-   
-   # Verificar logs
-   docker-compose logs mongodb
-   ```
+Si ves los datos de un usuario, la importación fue exitosa.
 
 ## Estructura del Proyecto
 
@@ -223,7 +157,3 @@ docker-compose up -d --build
 3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
 4. Push a la rama (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
-
-## Licencia
-
-Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
